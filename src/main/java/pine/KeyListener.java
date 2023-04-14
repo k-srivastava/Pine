@@ -16,17 +16,12 @@ public class KeyListener {
     public static void keyCallback(long windowPointer, int key, int scanCode, int action, int modifiers) {
         KeyListener instance = KeyListener.get();
 
-        if (action == GLFW.GLFW_PRESS) {
-            instance.keyPressed[key] = true;
-        }
-
-        else if (action == GLFW.GLFW_RELEASE) {
-            instance.keyPressed[key] = false;
-        }
+        if (action == GLFW.GLFW_PRESS) { instance.keyPressed[key] = true; }
+        else if (action == GLFW.GLFW_RELEASE) { instance.keyPressed[key] = false; }
     }
 
     public static boolean keyPressed(int key) {
         KeyListener instance = KeyListener.get();
-        return key < get().keyPressed.length && instance.keyPressed[key];
+        return key < instance.keyPressed.length && instance.keyPressed[key];
     }
 }

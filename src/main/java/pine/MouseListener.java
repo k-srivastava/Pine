@@ -58,13 +58,9 @@ public class MouseListener {
         instance.lastPosition = instance.position;
     }
 
-    public Vector2d position() {
-        return position;
-    }
+    public Vector2d position() { return this.position; }
 
-    public Vector2d scroll() {
-        return this.scroll;
-    }
+    public Vector2d scroll() { return this.scroll; }
 
     public Vector2d displacement() {
         Vector2d displacement = new Vector2d(0L, 0L);
@@ -73,9 +69,7 @@ public class MouseListener {
         return displacement;
     }
 
-    public boolean isDragging() {
-        return isDragging;
-    }
+    public boolean isDragging() { return this.isDragging; }
 
     public boolean mouseButtonDown(int button) {
         MouseListener instance = MouseListener.get();
