@@ -7,17 +7,27 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
+import pine.utils.GameScene;
+import pine.utils.Time;
 
 public class Window {
     private static Window window = null;
+    private static Scene currentScene = null;
     private final int width, height;
     private final String title;
     private long windowPointer;
+
+    public float r, g, b, a;
 
     private Window() {
         this.width = 1920;
         this.height = 1080;
         this.title = "Pine Window";
+
+        r = 1F;
+        g = 1F;
+        b = 1F;
+        a = 1F;
     }
 
     public static Window get() {
@@ -25,8 +35,15 @@ public class Window {
         return Window.window;
     }
 
+    public static void changeScene(GameScene newScene) {
+        switch (newScene) {
+            case LevelEditorScene -> currentScene = new LevelEditorScene();
+            case LevelScene -> currentScene = new LevelScene();
+        }
+    }
+
     public void run() {
-        System.out.printf("Hello LWJGL %s!", Version.getVersion());
+        System.out.printf("Hello LWJGL %s!\n", Version.getVersion());
 
         initialize();
         mainLoop();
@@ -68,18 +85,29 @@ public class Window {
 
         GLFW.glfwShowWindow(this.windowPointer);
         GL.createCapabilities();
+
+        Window.changeScene(GameScene.LevelEditorScene);
     }
 
     public void mainLoop() {
+        double frameStartTime = Time.time();
+        double frameEndTime;
+        double deltaTime = 0L;
+
         while (!GLFW.glfwWindowShouldClose(this.windowPointer)) {
             GLFW.glfwPollEvents();
 
-            GL11.glClearColor(1F, 0F, 0F, 1F);
+            GL11.glClearColor(this.r, this.g, this.b, this.a);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-            if (KeyListener.keyPressed(GLFW.GLFW_KEY_SPACE)) { System.out.println("Space key is pressed."); }
+
+            Window.currentScene.update(deltaTime);
 
             GLFW.glfwSwapBuffers(this.windowPointer);
+
+            frameEndTime = Time.time();
+            deltaTime = frameEndTime - frameStartTime;
+            frameStartTime = frameEndTime;
         }
     }
 }
