@@ -12,9 +12,9 @@ public class MouseListener {
     private boolean isDragging;
 
     private MouseListener() {
-        this.scroll = new Vector2d(0L, 0L);
-        this.position = new Vector2d(0L, 0L);
-        this.lastPosition = new Vector2d(0L, 0L);
+        this.scroll = new Vector2d(0D, 0D);
+        this.position = new Vector2d(0D, 0D);
+        this.lastPosition = new Vector2d(0D, 0D);
     }
 
     public static MouseListener get() {
@@ -54,7 +54,7 @@ public class MouseListener {
     public static void endFrame() {
         MouseListener instance = MouseListener.get();
 
-        instance.scroll = new Vector2d(0L, 0L);
+        instance.scroll = new Vector2d(0D, 0D);
         instance.lastPosition = instance.position;
     }
 
@@ -63,7 +63,7 @@ public class MouseListener {
     public Vector2d scroll() { return this.scroll; }
 
     public Vector2d displacement() {
-        Vector2d displacement = new Vector2d(0L, 0L);
+        Vector2d displacement = new Vector2d(0D, 0D);
         this.lastPosition.sub(this.position, displacement);
 
         return displacement;

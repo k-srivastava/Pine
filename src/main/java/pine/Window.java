@@ -94,7 +94,7 @@ public class Window {
     public void mainLoop() {
         double frameStartTime = Time.time();
         double frameEndTime;
-        double deltaTime = 0L;
+        double deltaTime = 0D;
 
         while (!GLFW.glfwWindowShouldClose(this.windowPointer)) {
             GLFW.glfwPollEvents();

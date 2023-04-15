@@ -13,30 +13,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class LevelEditorScene extends Scene {
-    private final String vertexShaderSource = """
-        #version 330 core
-        
-        layout (location = 0) in vec3 attributePosition;
-        layout (location = 1) in vec4 attributeColor;
-        
-        out vec4 fragmentColor;
-        
-        void main(void) {
-            fragmentColor = attributeColor;
-            gl_Position = vec4(attributePosition, 1.0);
-        }
-        """;
-    private final String fragmentShaderSource = """
-        #version 330 core
-        
-        in vec4 fragmentColor;
-        
-        out vec4 color;
-        
-        void main(void) {
-            color = fragmentColor;
-        }
-        """;
     private final float[] vertexArray = {
         0.5F, -0.5F, 0.0F, 1F, 0F, 0F, 1F,  // Bottom-right.
         -0.5F, 0.5F, 0.0F, 0F, 1F, 0F, 1F,  // Top-left.
