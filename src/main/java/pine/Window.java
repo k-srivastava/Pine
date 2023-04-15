@@ -37,9 +37,11 @@ public class Window {
 
     public static void changeScene(GameScene newScene) {
         switch (newScene) {
-            case LevelEditorScene -> currentScene = new LevelEditorScene();
-            case LevelScene -> currentScene = new LevelScene();
+            case LevelEditorScene -> Window.currentScene = new LevelEditorScene();
+            case LevelScene -> Window.currentScene = new LevelScene();
         }
+
+        Window.currentScene.initialize();
     }
 
     public void run() {
