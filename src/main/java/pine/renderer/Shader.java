@@ -1,11 +1,14 @@
 package pine.renderer;
 
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import pine.utils.ShaderType;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -67,6 +70,15 @@ public class Shader {
 
     public void detach() {
         GL20.glUseProgram(0);
+    }
+
+    public void uploadMatrix(String variableName, Matrix4f matrix) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+
+        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+        matrix.get(matrixBuffer);
+
+        GL20.glUniformMatrix4fv(variableLocation, false, matrixBuffer);
     }
 
     private int compile(@NotNull ShaderType shaderType) {

@@ -1,23 +1,22 @@
 package pine;
 
-import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import pine.renderer.Shader;
-import pine.utils.ShaderType;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class LevelEditorScene extends Scene {
     private final float[] vertexArray = {
-        0.5F, -0.5F, 0.0F, 1F, 0F, 0F, 1F,  // Bottom-right.
-        -0.5F, 0.5F, 0.0F, 0F, 1F, 0F, 1F,  // Top-left.
-        0.5F, 0.5F, 0.0F, 0F, 0F, 1F, 1F,  // Top-right.
-        -0.5F, -0.5F, 0.0F, 1F, 1F, 0F, 1F   // Bottom-left.
+        100F, 0F, 0F, 1F, 0F, 0F, 1F,  // Bottom-right.
+        0F, 100F, 0F, 0F, 1F, 0F, 1F,  // Top-left.
+        100f, 100f, 0F, 0F, 0F, 1F, 1F,  // Top-right.
+        0F, 0F, 0F, 1F, 1F, 0F, 1F   // Bottom-left.
     };
     private final int[] elementArray = {
         2, 1, 0,  // Top-right triangle.
@@ -27,7 +26,9 @@ public class LevelEditorScene extends Scene {
     private int vaoID, vboID, eboID;
     private Shader defaultShader;
 
-    public LevelEditorScene() { }
+    public LevelEditorScene() {
+        this.camera = new Camera(new Vector2f());
+    }
 
     @Override
     public void initialize() {
@@ -67,6 +68,8 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(double deltaTime) {
         this.defaultShader.use();
+        this.defaultShader.uploadMatrix("uniformProjection", this.camera.projectionMatrix());
+        this.defaultShader.uploadMatrix("uniformView", this.camera.viewMatrix());
 
         GL30.glBindVertexArray(this.vaoID);
         GL20.glEnableVertexAttribArray(0);
