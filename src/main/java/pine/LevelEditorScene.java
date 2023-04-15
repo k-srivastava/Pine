@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import pine.renderer.Shader;
 import pine.utils.ShaderType;
 
 import java.nio.FloatBuffer;
@@ -48,16 +49,14 @@ public class LevelEditorScene extends Scene {
     };
     private int vertexID, fragmentID, shaderProgramID;
     private int vaoID, vboID, eboID;
+    private Shader defaultShader;
 
     public LevelEditorScene() { }
 
     @Override
     public void initialize() {
-        this.compileShader(ShaderType.Vertex);
-        this.compileShader(ShaderType.Fragment);
-
-        this.shaderProgramID = GL20.glCreateProgram();
-        this.linkShaders();
+        this.defaultShader = new Shader("src/main/resources/shaders/default.glsl");
+        this.defaultShader.compile(true);
 
         this.vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(this.vaoID);
@@ -91,7 +90,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(double deltaTime) {
-        GL20.glUseProgram(this.shaderProgramID);
+        this.defaultShader.use();
 
         GL30.glBindVertexArray(this.vaoID);
         GL20.glEnableVertexAttribArray(0);
@@ -103,57 +102,6 @@ public class LevelEditorScene extends Scene {
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
 
-        GL20.glUseProgram(0);
-    }
-
-    private void compileShader(@NotNull ShaderType shaderType) {
-        int shaderID = -1;
-        String shader = "";
-
-        switch (shaderType) {
-            case Fragment -> {
-                this.fragmentID = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
-                GL20.glShaderSource(this.fragmentID, this.fragmentShaderSource);
-
-                shaderID = this.fragmentID;
-                shader = "Fragment shader";
-            }
-
-            case Vertex -> {
-                this.vertexID = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
-                GL20.glShaderSource(this.vertexID, this.vertexShaderSource);
-
-                shaderID = this.vertexID;
-                shader = "Vertex shader";
-            }
-        }
-
-        GL20.glCompileShader(shaderID);
-
-        int success = GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS);
-        if (success == GL11.GL_FALSE) {
-            int logLength = GL20.glGetShaderi(shaderID, GL20.GL_INFO_LOG_LENGTH);
-
-            System.err.printf("'defaultShader.glsl': %s compilation failed.\n", shader);
-            System.err.println(GL20.glGetShaderInfoLog(shaderID, logLength));
-
-            assert false : "";
-        }
-    }
-
-    private void linkShaders() {
-        GL20.glAttachShader(this.shaderProgramID, this.vertexID);
-        GL20.glAttachShader(this.shaderProgramID, this.fragmentID);
-        GL20.glLinkProgram(this.shaderProgramID);
-
-        int success = GL20.glGetProgrami(this.shaderProgramID, GL20.GL_LINK_STATUS);
-        if (success == GL11.GL_FALSE) {
-            int logLength = GL20.glGetProgrami(this.shaderProgramID, GL20.GL_INFO_LOG_LENGTH);
-
-            System.err.println("'defaultShader.glsl': Linking of shaders failed.\n");
-            System.err.println(GL20.glGetProgramInfoLog(this.shaderProgramID, logLength));
-
-            assert false : "";
-        }
+        this.defaultShader.detach();
     }
 }
