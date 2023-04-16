@@ -1,7 +1,7 @@
 package pine.renderer;
 
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -20,6 +20,7 @@ public class Shader {
     private final String filePath;
     private String vertexSource;
     private String fragmentSource;
+    private boolean beingUsed = false;
 
     /**
      * Create a new shader by parsing the shader file to split it into the vertex and fragment shaders and create the
@@ -79,23 +80,108 @@ public class Shader {
     }
 
     /**
-     * Use the current shader program.
+     * Use the current shader program if not already being used.
      */
-    public void use() { GL20.glUseProgram(this.shaderProgramID); }
+    public void use() {
+        if (!this.beingUsed) {
+            GL20.glUseProgram(this.shaderProgramID);
+            this.beingUsed = true;
+        }
+    }
 
     /**
      * Stop using the current shader program.
      */
-    public void detach() { GL20.glUseProgram(0); }
+    public void detach() {
+        GL20.glUseProgram(0);
+        this.beingUsed = false;
+    }
+
+    /**
+     * Upload an integer value to the shader.
+     *
+     * @param variableName Name of the int variable in the shader.
+     * @param value        Integer to be uploaded.
+     */
+    public void uploadInt(String variableName, int value) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
+        GL20.glUniform1i(variableLocation, value);
+    }
+
+    /**
+     * Upload a floating-point value to the shader.
+     *
+     * @param variableName Name of the float variable in the shader.
+     * @param value        Float to be uploaded.
+     */
+    public void uploadFloat(String variableName, float value) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
+        GL20.glUniform1f(variableLocation, value);
+    }
+
+    /**
+     * Upload a 2D vector to the shader.
+     *
+     * @param variableName Name of the vector variable in the shader.
+     * @param vector       Vector to be uploaded.
+     */
+    public void uploadVector(String variableName, Vector2f vector) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
+        GL20.glUniform2f(variableLocation, vector.x, vector.y);
+    }
+
+    /**
+     * Upload a 3D vector to the shader.
+     *
+     * @param variableName Name of the vector variable in the shader.
+     * @param vector       Vector to be uploaded.
+     */
+    public void uploadVector(String variableName, Vector3f vector) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
+        GL20.glUniform3f(variableLocation, vector.x, vector.y, vector.z);
+    }
+
+    /**
+     * Upload a 4D vector to the shader.
+     *
+     * @param variableName Name of the vector variable in the shader.
+     * @param vector       Vector to be uploaded.
+     */
+    public void uploadVector(String variableName, Vector4f vector) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
+        GL20.glUniform4f(variableLocation, vector.x, vector.y, vector.z, vector.w);
+    }
+
+    /**
+     * Upload a 3x3 matrix to the shader.
+     *
+     * @param variableName Name of the matrix variable in the shader.
+     * @param matrix       Matrix to be uploaded.
+     */
+    public void uploadMatrix(String variableName, Matrix3f matrix) {
+        int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
+
+        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(9);
+        matrix.get(matrixBuffer);
+
+        GL20.glUniformMatrix3fv(variableLocation, false, matrixBuffer);
+    }
 
     /**
      * Upload a 4x4 matrix to the shader.
      *
-     * @param variableName Name of thr matrix variable in the shader.
+     * @param variableName Name of the matrix variable in the shader.
      * @param matrix       Matrix to be uploaded.
      */
     public void uploadMatrix(String variableName, Matrix4f matrix) {
         int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
+        this.use();
 
         FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
         matrix.get(matrixBuffer);
