@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import pine.renderer.Shader;
+import pine.utils.Time;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -82,8 +83,10 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(double deltaTime) {
         this.defaultShader.use();
+
         this.defaultShader.uploadMatrix("uniformProjection", this.camera.projectionMatrix());
         this.defaultShader.uploadMatrix("uniformView", this.camera.viewMatrix());
+        this.defaultShader.uploadFloat("uniformTime", (float) Time.time());
 
         GL30.glBindVertexArray(this.vaoID);
         GL20.glEnableVertexAttribArray(0);
