@@ -190,6 +190,16 @@ public class Shader {
     }
 
     /**
+     * Upload a texture slot to the shader - saved as a sampler2D.
+     *
+     * @param variableName Name of the sampler2D variable in the shader.
+     * @param textureSlot  Texture slot to be uploaded.
+     */
+    public void uploadTexture(String variableName, int textureSlot) {
+        this.uploadInt(variableName, textureSlot);
+    }
+
+    /**
      * Compile a specific shader.
      *
      * @param shaderType Type of shader to be compiled.
