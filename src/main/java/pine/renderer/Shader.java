@@ -12,12 +12,21 @@ import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * GLSL shader representation class.
+ */
 public class Shader {
     private final int shaderProgramID;
     private final String filePath;
     private String vertexSource;
     private String fragmentSource;
 
+    /**
+     * Create a new shader by parsing the shader file to split it into the vertex and fragment shaders and create the
+     * OpenGL shader program.
+     *
+     * @param filePath Location of the shader file.
+     */
     public Shader(String filePath) {
         this.filePath = filePath;
 
@@ -57,21 +66,34 @@ public class Shader {
         this.shaderProgramID = GL20.glCreateProgram();
     }
 
-    public void compile(boolean link) {
+    /**
+     * Compile the vertex and fragment shaders.
+     *
+     * @param link Whether to link the shaders to the shader program.
+     */
+    public void compileAll(boolean link) {
         int vertexID = this.compile(ShaderType.Vertex);
         int fragmentID = this.compile(ShaderType.Fragment);
 
         if (link) { this.link(vertexID, fragmentID); }
     }
 
-    public void use() {
-        GL20.glUseProgram(this.shaderProgramID);
-    }
+    /**
+     * Use the current shader program.
+     */
+    public void use() { GL20.glUseProgram(this.shaderProgramID); }
 
-    public void detach() {
-        GL20.glUseProgram(0);
-    }
+    /**
+     * Stop using the current shader program.
+     */
+    public void detach() { GL20.glUseProgram(0); }
 
+    /**
+     * Upload a 4x4 matrix to the shader.
+     *
+     * @param variableName Name of thr matrix variable in the shader.
+     * @param matrix       Matrix to be uploaded.
+     */
     public void uploadMatrix(String variableName, Matrix4f matrix) {
         int variableLocation = GL20.glGetUniformLocation(this.shaderProgramID, variableName);
 
@@ -81,6 +103,12 @@ public class Shader {
         GL20.glUniformMatrix4fv(variableLocation, false, matrixBuffer);
     }
 
+    /**
+     * Compile a specific shader.
+     *
+     * @param shaderType Type of shader to be compiled.
+     * @return Shader ID of the compiled shader.
+     */
     private int compile(@NotNull ShaderType shaderType) {
         int shaderID = -1;
         String shader = "";
@@ -114,6 +142,12 @@ public class Shader {
         return shaderID;
     }
 
+    /**
+     * Link the vertex and fragment shaders to the shader program.
+     *
+     * @param vertexID   ID of the compiled vertex shader.
+     * @param fragmentID ID of the compiled fragment shader.
+     */
     private void link(int vertexID, int fragmentID) {
         GL20.glAttachShader(this.shaderProgramID, vertexID);
         GL20.glAttachShader(this.shaderProgramID, fragmentID);

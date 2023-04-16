@@ -10,15 +10,20 @@ import org.lwjgl.system.MemoryUtil;
 import pine.utils.GameScene;
 import pine.utils.Time;
 
+/**
+ * Window singleton.
+ */
 public class Window {
     private static Window window = null;
     private static Scene currentScene = null;
     private final int width, height;
     private final String title;
+    public float r, g, b, a;
     private long windowPointer;
 
-    public float r, g, b, a;
-
+    /**
+     * Create a new window with a 1920x1080 resolution, white background and title of "Pine Window".
+     */
     private Window() {
         this.width = 1920;
         this.height = 1080;
@@ -30,11 +35,19 @@ public class Window {
         a = 1F;
     }
 
+    /**
+     * @return Window singleton instance.
+     */
     public static Window get() {
         if (Window.window == null) { Window.window = new Window(); }
         return Window.window;
     }
 
+    /**
+     * Set the current scene to the new scene and initialize it.
+     *
+     * @param newScene New scene to the made the current scene.
+     */
     public static void changeScene(GameScene newScene) {
         switch (newScene) {
             case LevelEditorScene -> Window.currentScene = new LevelEditorScene();
@@ -44,6 +57,9 @@ public class Window {
         Window.currentScene.initialize();
     }
 
+    /**
+     * Run lifetime of the window.
+     */
     public void run() {
         System.out.printf("Hello LWJGL %s!\n", Version.getVersion());
 
@@ -59,6 +75,9 @@ public class Window {
         if (nullCallback != null) { nullCallback.free(); }
     }
 
+    /**
+     * Initialize the window with default settings, setup callbacks and OpenGL.
+     */
     public void initialize() {
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -91,6 +110,9 @@ public class Window {
         Window.changeScene(GameScene.LevelEditorScene);
     }
 
+    /**
+     * Main loop of the window to update the window every tick.
+     */
     public void mainLoop() {
         double frameStartTime = Time.time();
         double frameEndTime;

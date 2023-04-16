@@ -11,6 +11,9 @@ import pine.renderer.Shader;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+/**
+ * Level editor scene - currently a test scene.
+ */
 public class LevelEditorScene extends Scene {
     private final float[] vertexArray = {
         100F, 0F, 0F, 1F, 0F, 0F, 1F,  // Bottom-right.
@@ -26,14 +29,20 @@ public class LevelEditorScene extends Scene {
     private int vaoID, vboID, eboID;
     private Shader defaultShader;
 
+    /**
+     * Create the new scene and initialize the camera to (0, 0).
+     */
     public LevelEditorScene() {
         this.camera = new Camera(new Vector2f());
     }
 
+    /**
+     * Load the shaders and bind the data to the VAO, VBO and EBOs.
+     */
     @Override
     public void initialize() {
         this.defaultShader = new Shader("src/main/resources/shaders/default.glsl");
-        this.defaultShader.compile(true);
+        this.defaultShader.compileAll(true);
 
         this.vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(this.vaoID);
@@ -65,6 +74,11 @@ public class LevelEditorScene extends Scene {
         GL20.glEnableVertexAttribArray(1);
     }
 
+    /**
+     * Use ths shaders, draw the elements and then detach the shaders every frame.
+     *
+     * @param deltaTime Time between current and previous frame.
+     */
     @Override
     public void update(double deltaTime) {
         this.defaultShader.use();

@@ -1,6 +1,12 @@
 package pine;
 
+/**
+ * Main level scene - currently a white background.
+ */
 public class LevelScene extends Scene {
+    /**
+     * Create the new scene and set the window background to be white.
+     */
     public LevelScene() {
         Window window = Window.get();
 
@@ -12,7 +18,5 @@ public class LevelScene extends Scene {
     }
 
     @Override
-    public void update(double deltaTime) {
-
-    }
+    public void update(double deltaTime) { }
 }
